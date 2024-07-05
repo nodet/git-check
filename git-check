@@ -8,22 +8,23 @@
 #
 
 # Default command to use to list commits
-LOG="${GIT_CHECK_LOG_CMD:="log --oneline"}"
+LOG_DEFAULT="log --oneline"
+# Set the command from env var, or default if not set
+LOG="${GIT_CHECK_LOG_CMD:="$LOG_DEFAULT"}"
 
 show_help() {
     echo "Usage: git check [-h] [-l command] [ref]"
     echo
     echo "  -h     Show this help message"
-    echo "  -l     Command to use to log the commits"
-    echo "         Initialized from environment variable GIT_CHECK_LOG_CMD"
-    echo "         Defaults to '$LOG'"
+    echo "  -l     Command to use to log the commits."
+    echo "         Defaults to \$GIT_CHECK_LOG_CMD, and"
+    echo "         '$LOG_DEFAULT' if that variable is not set"
     echo "  ref    Commit to check, defaults to HEAD"
     echo
     echo "Example: git check aa89ff6"
     echo ""
     echo "This script was written by Xavier Nodet <xavier.nodet@gmail.com>"
     echo "and is Unlicensed <http://unlicense.org/>"
-
 }
 
 while getopts ":hl:" opt; do

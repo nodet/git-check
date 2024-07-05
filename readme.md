@@ -25,3 +25,22 @@ A       Makefile
 M       git-check
 M       readme.md
 ```
+
+## Usage
+
+```
+$ git check -h
+Usage: git check [-h] [-l command] [ref]
+
+  -h     Show this help message
+  -l     Command to use to log the commits.
+         Defaults to $GIT_CHECK_LOG_CMD, and
+         'log --oneline' if that variable is not set
+  ref    Commit to check, defaults to HEAD
+
+Example: git check aa89ff6
+
+This script was written by Xavier Nodet <xavier.nodet@gmail.com>
+and is Unlicensed <http://unlicense.org/>
+```
+
