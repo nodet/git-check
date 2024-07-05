@@ -1,0 +1,50 @@
+all: test
+
+clean:
+	rm -rf test-origin
+	rm -rf test-wc
+
+test-origin:
+	mkdir test-origin
+	cd test-origin; \
+	git init --initial-branch=main; \
+	git commit --allow-empty -m "An initial commit"; \
+	git commit --allow-empty -m "A: on main"; \
+	git branch a_branch; \
+	git commit --allow-empty -m "B: on main"; \
+	git checkout a_branch; \
+	git commit --allow-empty -m "C: on a_branch, from A"; \
+	git checkout main; \
+	git merge a_branch -m "Merging a_branch"
+
+test-wc: test-origin
+	git clone test-origin test-wc
+
+
+test: test-origin test-wc
+
+	# Check before any change
+	cd test-wc; \
+		git check | grep 'HEAD is the tip of origin/main'
+
+	# Check a branch created from the tip of a remote branch
+	cd test-wc; \
+		git checkout -b a_new_branch origin/a_branch; \
+		git commit --allow-empty -m "D: on a new branch based on a_branch"; \
+		git check | grep 'HEAD is based on origin/a_branch'
+
+	# Check a detached commit
+	cd test-wc; \
+		git checkout origin/a_branch; \
+		git commit --allow-empty -m "E: based on a_branch"; \
+		git check | grep 'HEAD is based on origin/a_branch'
+
+	# Check a commit already on origin
+	cd test-wc; \
+		git checkout origin/a_branch^; \
+		git check | grep 'HEAD belongs to origin/a_branch'
+
+	# Check a commit already on origin and tip of branch
+	cd test-wc; \
+		git checkout origin/a_branch; \
+		git check | grep 'HEAD is the tip of origin/a_branch'
