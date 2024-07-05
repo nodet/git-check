@@ -7,6 +7,37 @@
 # SPDX-License-Identifier: Unlicense
 #
 
+show_help() {
+    echo "Usage: git check [-h] [reference]"
+    echo
+    echo "  -h     Show this help message"
+    echo
+    echo "Example: git check aa89ff6"
+    echo ""
+    echo "This script was written by Xavier Nodet <xavier.nodet@gmail.com>"
+    echo "and is Unlicensed <http://unlicense.org/>"
+
+}
+
+while getopts ":h" opt; do
+  case ${opt} in
+    h)
+      show_help
+      exit 0
+      ;;
+    ?)
+      echo "Invalid option: -${OPTARG}."
+      exit 1
+      ;;
+  esac
+done
+
+if test $# -gt 1; then
+    echo "Too many arguments: '$*'"
+    show_help
+    exit 1
+fi
+
 current=$1
 if [[ "$current" == "" ]]; then
     current="HEAD"
