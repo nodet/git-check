@@ -11,12 +11,13 @@
 LOG="${GIT_CHECK_LOG_CMD:="log --oneline"}"
 
 show_help() {
-    echo "Usage: git check [-h] [-l command] [reference]"
+    echo "Usage: git check [-h] [-l command] [ref]"
     echo
     echo "  -h     Show this help message"
     echo "  -l     Command to use to log the commits"
     echo "         Initialized from environment variable GIT_CHECK_LOG_CMD"
     echo "         Defaults to '$LOG'"
+    echo "  ref    Commit to check, defaults to HEAD"
     echo
     echo "Example: git check aa89ff6"
     echo ""
