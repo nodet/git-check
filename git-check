@@ -3,6 +3,9 @@
 # Sanity checks to confirm that I didn't do anything silly
 # before pushing to origin.
 #
+# This code was written by Xavier Nodet <xavier.nodet@gmail.com>
+# SPDX-License-Identifier: Unlicense
+#
 
 current=$1
 if [[ "$current" == "" ]]; then
