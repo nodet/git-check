@@ -31,9 +31,12 @@ M       readme.md
 
 ```
 $ git check -h
-Usage: git check [-h] [-l command] [ref]
+Usage: git check [-l command] [ref]
+       git check -h
+       git check -v
 
   -h     Show this help message
+  -v     Show version number
   -l     Command to use to log the commits.
          Defaults to $GIT_CHECK_LOG_CMD, and
          'log --oneline' if that variable is not set

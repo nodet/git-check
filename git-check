@@ -7,15 +7,20 @@
 # SPDX-License-Identifier: Unlicense
 #
 
+VERSION="0.9.0"
+
 # Default command to use to list commits
 LOG_DEFAULT="log --oneline"
 # Set the command from env var, or default if not set
 LOG="${GIT_CHECK_LOG_CMD:="$LOG_DEFAULT"}"
 
 show_help() {
-    echo "Usage: git check [-h] [-l command] [ref]"
+    echo "Usage: git check [-l command] [ref]"
+    echo "       git check -h"
+    echo "       git check -v"
     echo
     echo "  -h     Show this help message"
+    echo "  -v     Show version number"
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set"
@@ -27,10 +32,18 @@ show_help() {
     echo "and is Unlicensed <http://unlicense.org/>"
 }
 
-while getopts ":hl:" opt; do
+show_version() {
+    echo "git-check $VERSION"
+}
+
+while getopts ":hvl:" opt; do
   case ${opt} in
     h)
         show_help
+        exit 0
+        ;;
+    v)
+        show_version
         exit 0
         ;;
     l)
