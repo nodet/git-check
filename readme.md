@@ -12,11 +12,16 @@ prints one-liners showing the history from that commit to `HEAD`.
 $ brew tap nodet/scripts
 $ brew install git-check
 $ git check
-HEAD is based on origin/main (d9d4d46):
-2ff09b8 Skeleton of readme                   3 seconds ago [Xavier Nodet] (HEAD -> main)
-99fec54 Add UNLICENSE                        48 seconds ago [Xavier Nodet]
-d9d4d46 The real code                        34 minutes ago [Xavier Nodet] (origin/main, origin/HEAD)
+HEAD is based on origin/main (b1feb4a):
+346f1f7 (HEAD -> main) Add -l and GIT_CHECK_LOG_CMD
+2c19f03 Test for -h
+bd2178a Some tests
+9ef6c92 A bit of command-line arguments checking
+fa23da0 Author and license id in the code
+0bae109 A few more words of introduction
+b1feb4a (origin/main, origin/HEAD) Update readme.md
 Modified files:
-A       UNLICENSE
-A       readme.md
+A       Makefile
+M       git-check
+M       readme.md
 ```
