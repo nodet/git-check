@@ -1,1 +1,86 @@
-echo Hello
+#!/bin/sh -e
+#
+# Sanity checks to confirm that I didn't do anything silly
+# before pushing to origin.
+#
+
+current=$1
+if [[ "$current" == "" ]]; then
+    current="HEAD"
+fi
+
+# Get the name of the current branch
+current_branch=$(git name-rev --name-only $current)
+if [ "$current_branch" == "undefined" ]; then
+    # If we're not on a branch, 'undefined' would trigger an error later
+    current_branch=$current
+fi
+
+# Initialize a variable to store the latest common commit
+common_ancestor=""
+# one to store the branch it's on
+base_branch=""
+# and one to indicate whether it's the tip of that branch
+is_a_tip=false
+
+# Iterate over all the branches from 'origin'
+all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
+for branch in $all_branches; do
+    # Find the latest common commit between the current branch and the current iteration branch
+    common_commit=$(git merge-base "$current_branch" "$branch")
+    # If we already have this commit, there's no further consideration needed
+    if [ "$common_commit" == "$common_ancestor" ]; then
+        continue
+    fi
+    # Is this commit the tip of the branch we test?
+    branch_tip=$(git rev-parse "$branch")
+    if [ "$common_commit" == "$branch_tip" ]; then
+        this_one_is_a_tip=true
+    else
+        this_one_is_a_tip=false
+    fi
+    # If common_ancestor is empty, initialize it
+    # and be done for that branch
+    if [ -z "$common_ancestor" ]; then
+        common_ancestor=$common_commit
+        base_branch=$branch
+        is_a_tip=$this_one_is_a_tip
+        continue
+    fi
+    if test "$is_a_tip" == "true" && test "$this_one_is_a_tip" == "false"; then
+        # This one is not the tip of a branch. If we have a tip, we
+        # discard that one.
+        continue
+    fi
+    # Compare the current common commit with the common_ancestor and
+    # update if necessary. 'git merge-base --is-ancestor' exits with 0 if
+    # the first commit (the one we knew already) is an ancestor of the second
+    # commit (on the branch we're testing). When that is the case, we want to
+    # store the latter.
+    if git merge-base --is-ancestor $common_ancestor $common_commit; then
+        common_ancestor=$common_commit
+        base_branch=$branch
+        is_a_tip=$this_one_is_a_tip
+    fi
+done
+
+# We now have found where the branch was created from
+
+# Get the short version of the commit id
+common_ancestor=`git rev-parse --short $common_ancestor`
+
+# Display the results
+current_id=$(git rev-parse --short $current)
+if test "$current_id" == "$common_ancestor"; then
+    if test "$is_a_tip" == "true"; then
+        echo "$current is the tip of $base_branch"
+    else
+        echo "$current belongs to $base_branch"
+    fi
+else
+    echo "$current is based on $base_branch ($common_ancestor):"
+    git hist $common_ancestor..$current
+    git hist -1 $common_ancestor
+    echo "Modified files:"
+    git diff --name-status $common_ancestor..$current
+fi
