@@ -23,6 +23,9 @@ test-wc: test-origin
 
 test: test-origin test-wc
 
+	# Check -h
+	git check -h | grep 'Usage'
+
 	# Check before any change
 	cd test-wc; \
 		git check | grep 'HEAD is the tip of origin/main'
