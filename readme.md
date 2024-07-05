@@ -3,9 +3,12 @@
 A git command to check the current status of a branch with respect to `origin`.
 
 The script finds the first commit reachable from `HEAD` (by default, could be
-any commit/tag/branch) that also appears in any branch on `origin`. It then
-prints one-liners showing the history from that commit to `HEAD`. Finally, it
-lists the files modified by these commits.
+a reference to any commit, tag or branch) that also appears in any branch on
+`origin`. It then prints one-liners showing the history from that commit to
+`HEAD`. In other words, this is a `git log` command that automatically stops
+when it gets uninteresting...
+
+Finally, it lists the files modified by these commits.
 
 ## Example
 
