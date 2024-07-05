@@ -42,6 +42,14 @@ test: test-origin test-wc
 		git commit --allow-empty -m "E: based on a_branch"; \
 		git check | grep 'HEAD is based on origin/a_branch'
 
+	# Check control of the command used to display commits
+	# If 'Author' appears, it must be because we successfully replaced
+	# the default command with the basic 'log'
+	cd test-wc; \
+		GIT_CHECK_LOG_CMD= git check | grep -v 'Author'; \
+		GIT_CHECK_LOG_CMD= git check -l "log" | grep 'Author'; \
+		GIT_CHECK_LOG_CMD="log" git check | grep 'Author'
+
 	# Check a commit already on origin
 	cd test-wc; \
 		git checkout origin/a_branch^; \
