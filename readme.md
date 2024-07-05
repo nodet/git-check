@@ -4,7 +4,8 @@ A git command to check the current status of a branch with respect to `origin`.
 
 The script finds the first commit reachable from `HEAD` (by default, could be
 any commit/tag/branch) that also appears in any branch on `origin`. It then
-prints one-liners showing the history from that commit to `HEAD`.
+prints one-liners showing the history from that commit to `HEAD`. Finally, it
+lists the files modified by these commits.
 
 ## Example
 
@@ -43,4 +44,3 @@ Example: git check aa89ff6
 This script was written by Xavier Nodet <xavier.nodet@gmail.com>
 and is Unlicensed <http://unlicense.org/>
 ```
-
