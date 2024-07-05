@@ -27,6 +27,24 @@ M       git-check
 M       readme.md
 ```
 
+## Installation
+
+To install the script, you can use [brew](https://brew.sh) and run:
+```
+$ brew tap nodet/scripts
+$ brew install git-check
+```
+
+This will download the latest version of the script, and put it somewhere on
+your system.  Usually, it ends up in your path, and `git` can find it.  This
+allows you to use the script as a `git` command (`git check` instead of
+`git-check`).
+
+If you're curious about how to go from 'a realease of this repo' to 'available
+through brew', take a look
+[here](https://github.com/nodet/homebrew-scripts/blob/main/Formula/git-check.rb).
+
+
 ## Usage
 
 ```
@@ -35,15 +53,15 @@ Usage: git check [-l command] [ref]
        git check -h
        git check -v
 
-  -h     Show this help message
-  -v     Show version number
+  -h     Show this help message.
+  -v     Show version number.
   -l     Command to use to log the commits.
-         Defaults to $GIT_CHECK_LOG_CMD, and
-         'log --oneline' if that variable is not set
-  ref    Commit to check, defaults to HEAD
+         Defaults to the value of $GIT_CHECK_LOG_CMD, and
+         'log --oneline' if that variable is not set.
+  ref    Commit to check, defaults to HEAD.
 
 Example: git check aa89ff6
 
 This script was written by Xavier Nodet <xavier.nodet@gmail.com>
-and is Unlicensed <http://unlicense.org/>
+and is Unlicensed <http://unlicense.org/>.
 ```

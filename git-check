@@ -19,17 +19,17 @@ show_help() {
     echo "       git check -h"
     echo "       git check -v"
     echo
-    echo "  -h     Show this help message"
-    echo "  -v     Show version number"
+    echo "  -h     Show this help message."
+    echo "  -v     Show version number."
     echo "  -l     Command to use to log the commits."
-    echo "         Defaults to \$GIT_CHECK_LOG_CMD, and"
-    echo "         '$LOG_DEFAULT' if that variable is not set"
-    echo "  ref    Commit to check, defaults to HEAD"
+    echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
+    echo "         '$LOG_DEFAULT' if that variable is not set."
+    echo "  ref    Commit to check, defaults to HEAD."
     echo
     echo "Example: git check aa89ff6"
     echo ""
     echo "This script was written by Xavier Nodet <xavier.nodet@gmail.com>"
-    echo "and is Unlicensed <http://unlicense.org/>"
+    echo "and is Unlicensed <http://unlicense.org/>."
 }
 
 show_version() {
