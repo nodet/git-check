@@ -89,8 +89,8 @@ branch was forked:
                  o--- HEAD
                 /
     ---o---o---1--- b1
-	            \
-	             o--- b2
+                \
+	         o--- b2
 ```
 
 As `1` is the tip of `b1`, and not the tip of `b2`, `git check` will consider
