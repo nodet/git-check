@@ -17,13 +17,13 @@ $ brew tap nodet/scripts
 $ brew install git-check
 $ git check
 HEAD is based on origin/main (b1feb4a):
-346f1f7 (HEAD -> main) Add -l and GIT_CHECK_LOG_CMD
-2c19f03 Test for -h
-bd2178a Some tests
-9ef6c92 A bit of command-line arguments checking
-fa23da0 Author and license id in the code
-0bae109 A few more words of introduction
-b1feb4a (origin/main, origin/HEAD) Update readme.md
+a90e1fe [#1] Add -l and GIT_CHECK_LOG_CMD              19 hours ago [nodet] (HEAD -> main)
+2c19f03 Test for -h                                    19 hours ago [nodet]
+bd2178a Some tests                                     19 hours ago [nodet]
+9ef6c92 A bit of command-line arguments checking       20 hours ago [nodet]
+fa23da0 Author and license id in the code              20 hours ago [nodet]
+0bae109 A few more words of introduction               21 hours ago [nodet]
+b1feb4a Update readme.md                               22 hours ago [nodet] (origin/main, origin/HEAD)
 Modified files:
 A       Makefile
 M       git-check
