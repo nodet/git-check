@@ -91,8 +91,19 @@ all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep 
 for branch in $all_branches; do
     # Find the latest common commit between the current branch and the current iteration branch
     common_commit=$(git merge-base "$current_branch" "$branch")
-    # If we already have this commit, there's no further consideration needed
     if [ "$common_commit" == "$common_ancestor" ]; then
+        # The commit that would be the fork appears on several branches
+        # We compare the number of commits that each branch has and the other
+        # doesn't, and we keep the branch that has fewer of these.  In our
+        # workflow, this is a release branch, as opposed to main.
+        nb_on_base_not_branch=$(git log --oneline $base_branch --not $branch | wc -l)
+        nb_on_branch_not_base=$(git log --oneline $branch --not $base_branch | wc -l)
+        if test $nb_on_branch_not_base -lt $nb_on_base_not_branch; then
+            common_ancestor=$common_commit
+            base_branch=$branch
+            is_a_tip=$this_one_is_a_tip
+        fi
+        # No further consideration required
         continue
     fi
     # Is this commit the tip of the branch we test?
@@ -121,6 +132,7 @@ for branch in $all_branches; do
     # commit (on the branch we're testing). When that is the case, we want to
     # store the latter.
     if git merge-base --is-ancestor $common_ancestor $common_commit; then
+        # echo "$common_ancestor (on $base_branch) is an ancestor of $common_commit (on $branch), storing that" 1>&2
         common_ancestor=$common_commit
         base_branch=$branch
         is_a_tip=$this_one_is_a_tip

@@ -1,8 +1,9 @@
-all: test
+all: all-tests
 
 clean:
 	rm -rf test-origin
 	rm -rf test-wc
+	rm -rf test-*
 
 test-origin:
 	mkdir test-origin
@@ -62,3 +63,7 @@ test: test-origin test-wc
 	cd test-wc; \
 		git checkout origin/a_branch; \
 		git check | grep 'HEAD is the tip of origin/a_branch'
+
+all-tests: test
+	tests/gh-3.sh
+	@echo "All tests executed without error."
