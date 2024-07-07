@@ -74,9 +74,9 @@ and is Unlicensed <http://unlicense.org/>.
 For example, with this topology:
 
 ```
-	         o--- HEAD
-	        /
-	---o---1---o--- main
+             o--- HEAD
+            /
+    ---o---1---o--- main
 ```
 
 the merge base between `HEAD` and `main` is `1`. That's what
@@ -102,8 +102,8 @@ But suppose now that the fork commit is not the tip of any branch:
                  o--- HEAD
                 /
     ---o---o---1---o--- b1
-	            \
-	             o--- b2
+                \
+                 o--- b2
 ```
 
 In this example, there is no reason to prefer `b1` over `b2`, and `git check`
@@ -116,9 +116,9 @@ release branch `11.0` and a `main` branch.  The release branch was forked from
 following:
 
 ```
-	     o---o---o---o-------o--- 11.0
-	    /         \   \       \
-	---o---A---B---o---o---C---o--- main
+         o---o---o---o-------o--- 11.0
+        /         \   \       \
+    ---o---A---B---o---o---C---o--- main
 ```
 
 Commits `A`, `B` and `C` only appear on `main`.  This makes it easy for the
@@ -132,9 +132,9 @@ the fork commit appears on multiple branches. For example:
 ```
                                o--- HEAD
                               /
-	     o---o---o---o-------l---o--- 11.0
-	    /         \   \       \
-	---o---A---B---o---o---C---o--- main
+         o---o---o---o-------l---o--- 11.0
+        /         \   \       \
+    ---o---A---B---o---o---C---o--- main
 ```
 
 In this case, because some commits of `main` don't appear in `11.0`, the
@@ -145,22 +145,22 @@ Finally, consider the case of two release branches that are regularly merged one
 to the other, and both to main.  This looks like the following:
 
 ```
-	       o---o-------o--- 10.0
-	      /     \       \
-	     /   o---o---o---o----------o--- 11.0
-	    /   /     \       \          \
-	---o---o---o---o---o---o----------o--- main
+           o---o-------o--- 10.0
+          /     \       \
+         /   o---o---o---o----------o--- 11.0
+        /   /     \       \          \
+    ---o---o---o---o---o---o----------o--- main
 ```
 
 You create a commit from the tip of `11.0`, and then `11.0` gets updated. This
 would look like this:
 
 ```
-	       o---o-------A--- 10.0      o--- HEAD
-	      /     \       \            /
-	     /   o---o---o---o----------B---o--- 11.0
-	    /   /     \       \          \   \
-	---o---o---o---o---o---o----------o---o--- main
+           o---o-------A--- 10.0      o--- HEAD
+          /     \       \            /
+         /   o---o---o---o----------B---o--- 11.0
+        /   /     \       \          \   \
+    ---o---o---o---o---o---o----------o---o--- main
 ```
 
 When looking for the 'merge-base' between `HEAD` and any of `10.0`, `11.0`
