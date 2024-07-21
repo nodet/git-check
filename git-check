@@ -155,12 +155,6 @@ for branch in $all_branches; do
         is_a_tip=$this_one_is_a_tip
         continue
     fi
-    if test "$is_a_tip" == "true" && test "$this_one_is_a_tip" == "false"; then
-        # This one is not the tip of a branch. If we have a tip, we
-        # discard that one.
-        debug "Incumbent is the tip of a branch, when $common_commit is not. Leaving as is."
-        continue
-    fi
 done
 
 # We now have found where the branch was created from
