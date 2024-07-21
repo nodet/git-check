@@ -140,12 +140,6 @@ for branch in $all_branches; do
         is_a_tip=$this_one_is_a_tip
         continue
     fi
-    if test "$is_a_tip" == "true" && test "$this_one_is_a_tip" == "false"; then
-        # This one is not the tip of a branch. If we have a tip, we
-        # discard that one.
-        debug "Incumbent is the tip of a branch, when $common_commit is not. Leaving as is."
-        continue
-    fi
     # Compare the current common commit with the common_ancestor and
     # update if necessary. 'git merge-base --is-ancestor' exits with 0 if
     # the first commit (the one we knew already) is an ancestor of the second
@@ -156,6 +150,12 @@ for branch in $all_branches; do
         common_ancestor=$common_commit
         base_branch=$branch
         is_a_tip=$this_one_is_a_tip
+        continue
+    fi
+    if test "$is_a_tip" == "true" && test "$this_one_is_a_tip" == "false"; then
+        # This one is not the tip of a branch. If we have a tip, we
+        # discard that one.
+        debug "Incumbent is the tip of a branch, when $common_commit is not. Leaving as is."
         continue
     fi
 done
