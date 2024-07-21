@@ -106,6 +106,13 @@ for branch in $all_branches; do
     # iteration branch
     tentative=$(git merge-base "$ref_branch" "$branch")
     debug "Merge-base on $branch is $tentative"
+    # If incumbent is empty, initialize it and be done for that branch
+    if [ -z "$incumbent" ]; then
+        debug "Store our first incumbent"
+        incumbent=$tentative
+        incumbent_branch=$branch
+        continue
+    fi
     if [ "$tentative" == "$incumbent" ]; then
         # The commit that would be the fork appears on several branches
         # We compare the number of commits that each branch has and the other
@@ -125,12 +132,6 @@ for branch in $all_branches; do
             debug "We keep the incumbent"
         fi
         # No further consideration required
-        continue
-    fi
-    # If incumbent is empty, initialize it and be done for that branch
-    if [ -z "$incumbent" ]; then
-        incumbent=$tentative
-        incumbent_branch=$branch
         continue
     fi
     # Compare the tentative commit with the incumbent and
