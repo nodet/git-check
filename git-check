@@ -16,7 +16,7 @@ LOG_DEFAULT="log --oneline"
 LOG="${GIT_CHECK_LOG_CMD:="$LOG_DEFAULT"}"
 
 show_help() {
-    echo "Usage: git check [-l command] [ref]"
+    echo "Usage: git check [-d] [-l command] [ref]"
     echo "       git check -h"
     echo "       git check -v"
     echo
