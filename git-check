@@ -95,10 +95,8 @@ fi
 
 # Initialize a variable to store the latest common commit
 common_ancestor=""
-# one to store the branch it's on
+# and one to store the branch it's on
 base_branch=""
-# and one to indicate whether it's the tip of that branch
-is_a_tip=false
 
 # Iterate over all the branches from 'origin'
 all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
@@ -121,26 +119,17 @@ for branch in $all_branches; do
             debug "We store the new base $common_commit on $branch"
             common_ancestor=$common_commit
             base_branch=$branch
-            is_a_tip=$this_one_is_a_tip
         else
             debug "We keep the incumbent"
         fi
         # No further consideration required
         continue
     fi
-    # Is this commit the tip of the branch we test?
-    branch_tip=$(git rev-parse "$branch")
-    if [ "$common_commit" == "$branch_tip" ]; then
-        this_one_is_a_tip=true
-    else
-        this_one_is_a_tip=false
-    fi
     # If common_ancestor is empty, initialize it
     # and be done for that branch
     if [ -z "$common_ancestor" ]; then
         common_ancestor=$common_commit
         base_branch=$branch
-        is_a_tip=$this_one_is_a_tip
         continue
     fi
     # Compare the current common commit with the common_ancestor and
@@ -152,7 +141,6 @@ for branch in $all_branches; do
         debug "$common_ancestor (on $base_branch) is an ancestor of $common_commit (on $branch), storing the latter" 1>&2
         common_ancestor=$common_commit
         base_branch=$branch
-        is_a_tip=$this_one_is_a_tip
         continue
     fi
 done
@@ -165,7 +153,8 @@ common_ancestor=`git rev-parse --short $common_ancestor`
 # Display the results
 current_id=$(git rev-parse --short $current)
 if test "$current_id" == "$common_ancestor"; then
-    if test "$is_a_tip" == "true"; then
+    branch_tip=$(git rev-parse --short "$base_branch")
+    if [ "$current_id" == "$branch_tip" ]; then
         echo "$current is the tip of $base_branch"
     else
         echo "$current belongs to $base_branch"
