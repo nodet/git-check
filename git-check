@@ -86,7 +86,7 @@ if [[ "$ref" == "" ]]; then
     ref="HEAD"
 fi
 
-# Get the name of the current branch
+# Get the name of the target branch
 ref_branch=$(git name-rev --name-only $ref)
 if [ "$ref_branch" == "undefined" ]; then
     # If we're not on a branch, 'undefined' would trigger an error later
@@ -102,40 +102,35 @@ incumbent_branch=""
 all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
 for branch in $all_branches; do
     debug "Checking $branch"
-    # Find the latest common commit between the current branch and the ref iteration branch
-    common_commit=$(git merge-base "$ref_branch" "$branch")
-    debug "Merge-base on $branch is $common_commit"
-    if [ "$common_commit" == "$incumbent" ]; then
+    # Find the latest common commit between the target branch and the current
+    # iteration branch
+    tentative=$(git merge-base "$ref_branch" "$branch")
+    debug "Merge-base on $branch is $tentative"
+    if [ "$tentative" == "$incumbent" ]; then
         # The commit that would be the fork appears on several branches
         # We compare the number of commits that each branch has and the other
         # doesn't, and we keep the branch that has fewer of these.  In our
         # workflow, this is a release branch, as opposed to main.
         debug "This commit is our incumbent solution"
         nb_on_base_not_branch=$(git log --oneline $incumbent_branch --not $branch | wc -l)
-
         debug "There are $nb_on_base_not_branch commits to go from $incumbent_branch to $branch"
-
         nb_on_branch_not_base=$(git log --oneline $branch --not $incumbent_branch | wc -l)
-
         debug "There are $nb_on_branch_not_base commits to go from $branch to $incumbent_branch"
 
         if test $nb_on_branch_not_base -lt $nb_on_base_not_branch; then
-            debug "We store the new base $common_commit on $branch"
-            incumbent=$common_commit
+            debug "We store the new base $tentative on $branch"
+            incumbent=$tentative
             incumbent_branch=$branch
-
         else
             debug "We keep the incumbent"
         fi
         # No further consideration required
         continue
     fi
-    # If incumbent is empty, initialize it
-    # and be done for that branch
+    # If incumbent is empty, initialize it and be done for that branch
     if [ -z "$incumbent" ]; then
-        incumbent=$common_commit
+        incumbent=$tentative
         incumbent_branch=$branch
-
         continue
     fi
     # Compare the ref common commit with the incumbent and
@@ -143,12 +138,10 @@ for branch in $all_branches; do
     # the first commit (the one we knew already) is an ancestor of the second
     # commit (on the branch we're testing). When that is the case, we want to
     # store the latter.
-    if git merge-base --is-ancestor $incumbent $common_commit; then
-        debug "$incumbent (on $incumbent_branch) is an ancestor of $common_commit (on $branch), storing the latter" 1>&2
-
-        incumbent=$common_commit
+    if git merge-base --is-ancestor $incumbent $tentative; then
+        debug "$incumbent (on $incumbent_branch) is an ancestor of $tentative (on $branch), storing the latter" 1>&2
+        incumbent=$tentative
         incumbent_branch=$branch
-
         continue
     fi
 done
