@@ -39,7 +39,7 @@ show_help() {
 
 debug() {
     if test "$DEBUG" == "1"; then
-        echo $*
+        echo $* 1>&2
     fi
 }
 
@@ -139,7 +139,7 @@ for branch in $all_branches; do
     # commit (the tentative commit). When that is the case, we want to
     # store the latter.
     if git merge-base --is-ancestor $incumbent $tentative; then
-        debug "$incumbent (on $incumbent_branch) is an ancestor of $tentative (on $branch), storing the latter" 1>&2
+        debug "$incumbent (on $incumbent_branch) is an ancestor of $tentative (on $branch), storing the latter"
         incumbent=$tentative
         incumbent_branch=$branch
         continue
