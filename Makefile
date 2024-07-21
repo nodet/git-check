@@ -66,4 +66,5 @@ test: test-origin test-wc
 
 all-tests: test
 	tests/gh-3.sh
+	tests/gh-4.sh
 	@echo "All tests executed without error."

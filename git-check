@@ -8,6 +8,7 @@
 #
 
 VERSION="0.9.3"
+DEBUG=0
 
 # Default command to use to list commits
 LOG_DEFAULT="log --oneline"
@@ -21,6 +22,7 @@ show_help() {
     echo
     echo "  -h     Show this help message."
     echo "  -v     Show version number."
+    echo "  -d     Print debugging messages."
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set."
@@ -32,12 +34,21 @@ show_help() {
     echo "and is Unlicensed <http://unlicense.org/>."
 }
 
+debug() {
+    if test "$DEBUG" == "1"; then
+        echo $*
+    fi
+}
+
 show_version() {
     echo "git-check $VERSION"
 }
 
-while getopts ":hvl:" opt; do
+while getopts ":hvdl:" opt; do
   case ${opt} in
+    d)
+        DEBUG=1
+        ;;
     h)
         show_help
         exit 0
@@ -89,19 +100,27 @@ is_a_tip=false
 # Iterate over all the branches from 'origin'
 all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
 for branch in $all_branches; do
+    debug "Checking $branch"
     # Find the latest common commit between the current branch and the current iteration branch
     common_commit=$(git merge-base "$current_branch" "$branch")
+    debug "Merge-base on $branch is $common_commit"
     if [ "$common_commit" == "$common_ancestor" ]; then
         # The commit that would be the fork appears on several branches
         # We compare the number of commits that each branch has and the other
         # doesn't, and we keep the branch that has fewer of these.  In our
         # workflow, this is a release branch, as opposed to main.
+        debug "This commit is our incumbent solution"
         nb_on_base_not_branch=$(git log --oneline $base_branch --not $branch | wc -l)
+        debug "There are $nb_on_base_not_branch commits to go from $base_branch to $branch"
         nb_on_branch_not_base=$(git log --oneline $branch --not $base_branch | wc -l)
+        debug "There are $nb_on_branch_not_base commits to go from $branch to $base_branch"
         if test $nb_on_branch_not_base -lt $nb_on_base_not_branch; then
+            debug "We store the new base $common_commit on $branch"
             common_ancestor=$common_commit
             base_branch=$branch
             is_a_tip=$this_one_is_a_tip
+        else
+            debug "We keep the incumbent"
         fi
         # No further consideration required
         continue
@@ -124,6 +143,7 @@ for branch in $all_branches; do
     if test "$is_a_tip" == "true" && test "$this_one_is_a_tip" == "false"; then
         # This one is not the tip of a branch. If we have a tip, we
         # discard that one.
+        debug "Incumbent is the tip of a branch, when $common_commit is not. Leaving as is."
         continue
     fi
     # Compare the current common commit with the common_ancestor and
@@ -132,10 +152,11 @@ for branch in $all_branches; do
     # commit (on the branch we're testing). When that is the case, we want to
     # store the latter.
     if git merge-base --is-ancestor $common_ancestor $common_commit; then
-        # echo "$common_ancestor (on $base_branch) is an ancestor of $common_commit (on $branch), storing that" 1>&2
+        debug "$common_ancestor (on $base_branch) is an ancestor of $common_commit (on $branch), storing the latter" 1>&2
         common_ancestor=$common_commit
         base_branch=$branch
         is_a_tip=$this_one_is_a_tip
+        continue
     fi
 done
 
