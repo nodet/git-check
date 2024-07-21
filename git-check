@@ -133,10 +133,10 @@ for branch in $all_branches; do
         incumbent_branch=$branch
         continue
     fi
-    # Compare the ref common commit with the incumbent and
+    # Compare the tentative commit with the incumbent and
     # update if necessary. 'git merge-base --is-ancestor' exits with 0 if
-    # the first commit (the one we knew already) is an ancestor of the second
-    # commit (on the branch we're testing). When that is the case, we want to
+    # the first commit (the incumbent) is an ancestor of the second
+    # commit (the tentative commit). When that is the case, we want to
     # store the latter.
     if git merge-base --is-ancestor $incumbent $tentative; then
         debug "$incumbent (on $incumbent_branch) is an ancestor of $tentative (on $branch), storing the latter" 1>&2
