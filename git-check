@@ -176,6 +176,7 @@ if test "$current_id" == "$common_ancestor"; then
     else
         echo "$current belongs to $base_branch"
     fi
+    git $LOG -1 $common_id
 else
     echo "$current is based on $base_branch ($common_ancestor):"
     git $LOG $common_ancestor..$current
