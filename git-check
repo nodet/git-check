@@ -81,66 +81,74 @@ if test $# -gt 1; then
     exit 1
 fi
 
-current=$1
-if [[ "$current" == "" ]]; then
-    current="HEAD"
+ref=$1
+if [[ "$ref" == "" ]]; then
+    ref="HEAD"
 fi
 
 # Get the name of the current branch
-current_branch=$(git name-rev --name-only $current)
-if [ "$current_branch" == "undefined" ]; then
+ref_branch=$(git name-rev --name-only $ref)
+if [ "$ref_branch" == "undefined" ]; then
     # If we're not on a branch, 'undefined' would trigger an error later
-    current_branch=$current
+    ref_branch=$ref
 fi
 
 # Initialize a variable to store the latest common commit
-common_ancestor=""
+incumbent=""
 # and one to store the branch it's on
-base_branch=""
+incumbent_branch=""
 
 # Iterate over all the branches from 'origin'
 all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
 for branch in $all_branches; do
     debug "Checking $branch"
-    # Find the latest common commit between the current branch and the current iteration branch
-    common_commit=$(git merge-base "$current_branch" "$branch")
+    # Find the latest common commit between the current branch and the ref iteration branch
+    common_commit=$(git merge-base "$ref_branch" "$branch")
     debug "Merge-base on $branch is $common_commit"
-    if [ "$common_commit" == "$common_ancestor" ]; then
+    if [ "$common_commit" == "$incumbent" ]; then
         # The commit that would be the fork appears on several branches
         # We compare the number of commits that each branch has and the other
         # doesn't, and we keep the branch that has fewer of these.  In our
         # workflow, this is a release branch, as opposed to main.
         debug "This commit is our incumbent solution"
-        nb_on_base_not_branch=$(git log --oneline $base_branch --not $branch | wc -l)
-        debug "There are $nb_on_base_not_branch commits to go from $base_branch to $branch"
-        nb_on_branch_not_base=$(git log --oneline $branch --not $base_branch | wc -l)
-        debug "There are $nb_on_branch_not_base commits to go from $branch to $base_branch"
+        nb_on_base_not_branch=$(git log --oneline $incumbent_branch --not $branch | wc -l)
+
+        debug "There are $nb_on_base_not_branch commits to go from $incumbent_branch to $branch"
+
+        nb_on_branch_not_base=$(git log --oneline $branch --not $incumbent_branch | wc -l)
+
+        debug "There are $nb_on_branch_not_base commits to go from $branch to $incumbent_branch"
+
         if test $nb_on_branch_not_base -lt $nb_on_base_not_branch; then
             debug "We store the new base $common_commit on $branch"
-            common_ancestor=$common_commit
-            base_branch=$branch
+            incumbent=$common_commit
+            incumbent_branch=$branch
+
         else
             debug "We keep the incumbent"
         fi
         # No further consideration required
         continue
     fi
-    # If common_ancestor is empty, initialize it
+    # If incumbent is empty, initialize it
     # and be done for that branch
-    if [ -z "$common_ancestor" ]; then
-        common_ancestor=$common_commit
-        base_branch=$branch
+    if [ -z "$incumbent" ]; then
+        incumbent=$common_commit
+        incumbent_branch=$branch
+
         continue
     fi
-    # Compare the current common commit with the common_ancestor and
+    # Compare the ref common commit with the incumbent and
     # update if necessary. 'git merge-base --is-ancestor' exits with 0 if
     # the first commit (the one we knew already) is an ancestor of the second
     # commit (on the branch we're testing). When that is the case, we want to
     # store the latter.
-    if git merge-base --is-ancestor $common_ancestor $common_commit; then
-        debug "$common_ancestor (on $base_branch) is an ancestor of $common_commit (on $branch), storing the latter" 1>&2
-        common_ancestor=$common_commit
-        base_branch=$branch
+    if git merge-base --is-ancestor $incumbent $common_commit; then
+        debug "$incumbent (on $incumbent_branch) is an ancestor of $common_commit (on $branch), storing the latter" 1>&2
+
+        incumbent=$common_commit
+        incumbent_branch=$branch
+
         continue
     fi
 done
@@ -148,22 +156,26 @@ done
 # We now have found where the branch was created from
 
 # Get the short version of the commit id
-common_ancestor=`git rev-parse --short $common_ancestor`
+incumbent=`git rev-parse --short $incumbent`
 
 # Display the results
-current_id=$(git rev-parse --short $current)
-if test "$current_id" == "$common_ancestor"; then
-    branch_tip=$(git rev-parse --short "$base_branch")
-    if [ "$current_id" == "$branch_tip" ]; then
-        echo "$current is the tip of $base_branch"
+ref_id=$(git rev-parse --short $ref)
+if test "$ref_id" == "$incumbent"; then
+    branch_tip=$(git rev-parse --short "$incumbent_branch")
+
+    if [ "$ref_id" == "$branch_tip" ]; then
+        echo "$ref is the tip of $incumbent_branch"
+
     else
-        echo "$current belongs to $base_branch"
+        echo "$ref belongs to $incumbent_branch"
+
     fi
     git $LOG -1 $common_id
 else
-    echo "$current is based on $base_branch ($common_ancestor):"
-    git $LOG $common_ancestor..$current
-    git $LOG -1 $common_ancestor
+    echo "$ref is based on $incumbent_branch ($incumbent):"
+
+    git $LOG $incumbent..$ref
+    git $LOG -1 $incumbent
     echo "Modified files:"
-    git diff --name-status $common_ancestor..$current
+    git diff --name-status $incumbent..$ref
 fi
