@@ -20,13 +20,16 @@ show_help() {
     echo "       git check -h"
     echo "       git check -v"
     echo
+    echo "Show the commits between the specified reference (or HEAD) and the"
+    echo "earliest commit that appears on 'origin'."
+    echo
     echo "  -h     Show this help message."
     echo "  -v     Show version number."
     echo "  -d     Print debugging messages."
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set."
-    echo "  ref    Commit to check, defaults to HEAD."
+    echo "  ref    Commit to start from, defaults to HEAD."
     echo
     echo "Example: git check aa89ff6"
     echo ""
