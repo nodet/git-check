@@ -52,21 +52,37 @@ through brew', take a look
 
 ```
 $ git check -h
-Usage: git check [-l command] [ref]
+Usage: git check [-d] [-l command] [-n] [ref]
        git check -h
        git check -v
 
+Show the commits between the specified reference (or HEAD) and the
+earliest commit that appears on 'origin'.
+
   -h     Show this help message.
   -v     Show version number.
+  -d     Print debugging messages.
   -l     Command to use to log the commits.
          Defaults to the value of $GIT_CHECK_LOG_CMD, and
          'log --oneline' if that variable is not set.
-  ref    Commit to check, defaults to HEAD.
+  -n     Ignore 'check.branches' filter.
+  ref    Commit to start from, defaults to HEAD.
 
 Example: git check aa89ff6
 
 This script was written by Xavier Nodet <xavier.nodet@gmail.com>
 and is Unlicensed <http://unlicense.org/>.
+```
+
+When a git configuration option `check.branches` exists, it is assumed to be a
+regex that matches the branches that should be considered.  All other branches
+in `origin` will be ignored.  This is intended to speed-up the script when
+there are many branches, as each takes around 1/10th of a second to check.
+This can be ignored with the `-n` option.
+
+Example:
+```
+$ git config --local check.branches "(master)|(v...)"
 ```
 
 ## How does it work?
