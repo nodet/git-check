@@ -14,11 +14,10 @@ git clone orig wc
 cd wc
 
 git config --local check.branches main
-git check
-git check | grep "the tip of origin/main" || exit 1
+git check    | grep "the tip of origin/main"   || exit 1
+git check -n | grep "the tip of origin/branch" || exit 1
 
 git config --local check.branches branch
-git check
-git check | grep "the tip of origin/branch" || exit 1
+git check    | grep "the tip of origin/branch" || exit 1
 
 exit 0
