@@ -27,6 +27,6 @@ cd wc
 git checkout l
 git branch branch
 git commit --allow-empty -m "on branch"
-git check | grep "based on origin/b"
+git check | grep "based on origin/b" || exit 1
 
 exit 0

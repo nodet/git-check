@@ -64,7 +64,13 @@ test: test-origin test-wc
 		git checkout origin/a_branch; \
 		git check | grep 'HEAD is the tip of origin/a_branch'
 
-all-tests: test
-	tests/gh-3.sh
-	tests/gh-4.sh
+# Run all the tests in directory 'tests'
+TEST_DIR := tests
+auto-tests: test $(wildcard $(TEST_DIR)/*.sh)
+	@for script in $^; do \
+		echo "Running $$script"; \
+		sh $$script; \
+	done
+
+all-tests: test auto-tests
 	@echo "All tests executed without error."

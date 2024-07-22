@@ -23,6 +23,6 @@ cd wc
 git checkout B
 git commit --allow-empty -m "Diverging from main/B"
 
-git check | grep "based on origin/main"
+git check | grep "based on origin/main" || exit 1
 
 exit 0
