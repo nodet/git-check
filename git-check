@@ -98,9 +98,17 @@ incumbent=""
 # and one to store the branch it's on
 incumbent_branch=""
 
+# Grab a filter for the branches to consider
+branch_filter=$(git config --get check.branches || echo ".*")
+debug "Will only consider branches matching $branch_filter"
+
 # Iterate over all the branches from 'origin'
 all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
 for branch in $all_branches; do
+    if [[ ! $branch =~ $branch_filter ]]; then
+        debug "Ignoring $branch"
+        continue
+    fi
     debug "Checking $branch"
     # Find the latest common commit between the target branch and the current
     # iteration branch
