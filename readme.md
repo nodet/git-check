@@ -52,16 +52,17 @@ through brew', take a look
 
 ```
 $ git check -h
-Usage: git check [-d] [-l command] [-n] [ref]
+Usage: git check [-d] [-r remote] [-l command] [-n] [ref]
        git check -h
        git check -v
 
 Show the commits between the specified reference (or HEAD) and the
-earliest commit that appears on 'origin'.
+earliest commit that appears on 'origin' or another specified remote.
 
   -h     Show this help message.
   -v     Show version number.
   -d     Print debugging messages.
+  -r     Consider the specified remote instead of 'origin'.
   -l     Command to use to log the commits.
          Defaults to the value of $GIT_CHECK_LOG_CMD, and
          'log --oneline' if that variable is not set.

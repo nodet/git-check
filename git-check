@@ -23,7 +23,7 @@ show_help() {
     echo "       git check -v"
     echo
     echo "Show the commits between the specified reference (or HEAD) and the"
-    echo "earliest commit that appears on 'origin'."
+    echo "earliest commit that appears on 'origin' or another specified remote."
     echo
     echo "  -h     Show this help message."
     echo "  -v     Show version number."
