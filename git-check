@@ -120,7 +120,15 @@ for branch in $all_branches; do
     debug "Checking $branch"
     # Find the latest common commit between the target branch and the current
     # iteration branch
+    set +e
     tentative=$(git merge-base "$ref_branch" "$branch")
+    if test $? -ne 0; then
+        # If 'git merge-base' fails, this must be because the ref_branch
+        # and branch have no common commit. And then it can't be a candidate.
+        debug "This branch has no common commit"
+        continue
+    fi
+    set -e
     debug "Merge-base on $branch is $tentative"
     # If incumbent is empty, initialize it and be done for that branch
     if [ -z "$incumbent" ]; then
