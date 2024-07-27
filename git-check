@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: Unlicense
 #
 
-VERSION="0.9.3"
+VERSION="1.0.0"
 DEBUG=0
 NO_FILTER=0
 
