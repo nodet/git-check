@@ -10,6 +10,7 @@
 VERSION="1.0.0"
 DEBUG=0
 NO_FILTER=0
+REMOTE="origin"
 
 # Default command to use to list commits
 LOG_DEFAULT="log --oneline"
@@ -17,7 +18,7 @@ LOG_DEFAULT="log --oneline"
 LOG="${GIT_CHECK_LOG_CMD:="$LOG_DEFAULT"}"
 
 show_help() {
-    echo "Usage: git check [-d] [-l command] [-n] [ref]"
+    echo "Usage: git check [-d] [-r remote] [-l command] [-n] [ref]"
     echo "       git check -h"
     echo "       git check -v"
     echo
@@ -27,6 +28,7 @@ show_help() {
     echo "  -h     Show this help message."
     echo "  -v     Show version number."
     echo "  -d     Print debugging messages."
+    echo "  -r     Consider the specified remote instead of 'origin'."
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set."
@@ -49,7 +51,7 @@ show_version() {
     echo "git-check $VERSION"
 }
 
-while getopts ":hvdnl:" opt; do
+while getopts ":hvdr:nl:" opt; do
   case ${opt} in
     d)
         DEBUG=1
@@ -61,6 +63,9 @@ while getopts ":hvdnl:" opt; do
     v)
         show_version
         exit 0
+        ;;
+    r)
+        REMOTE=$OPTARG
         ;;
     n)
         NO_FILTER=1
@@ -111,7 +116,8 @@ fi
 debug "Will only consider branches matching '$branch_filter'"
 
 # Iterate over all the branches from 'origin'
-all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^origin/")
+all_branches=$(git for-each-ref --format='%(refname:short)' refs/remotes | grep "^$REMOTE/")
+debug $all_branches
 for branch in $all_branches; do
     if [[ ! $branch =~ $branch_filter ]]; then
         debug "Ignoring $branch"
