@@ -66,10 +66,10 @@ test: test-origin test-wc
 
 # Run all the tests in directory 'tests'
 TEST_DIR := tests
-auto-tests: test $(wildcard $(TEST_DIR)/*.sh)
+auto-tests: $(wildcard $(TEST_DIR)/*.sh)
 	@for script in $^; do \
 		echo "Running $$script"; \
-		sh $$script; \
+		$$script || exit 1; \
 	done
 
 all-tests: test auto-tests
