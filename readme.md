@@ -43,8 +43,8 @@ your system.  Usually, it ends up in your path, and `git` can find it.  This
 allows you to use the script as a `git` command (`git check` instead of
 `git-check`).
 
-If you're curious about how to go from 'a realease of this repo' to 'available
-through brew', take a look
+If you're curious about how to go from 'a release from this repo' to
+'available through brew', take a look
 [here](https://github.com/nodet/homebrew-scripts/blob/main/Formula/git-check.rb).
 
 
