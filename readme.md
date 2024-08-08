@@ -75,11 +75,12 @@ This script was written by Xavier Nodet <xavier.nodet@gmail.com>
 and is Unlicensed <http://unlicense.org/>.
 ```
 
-When a git configuration option `check.branches` exists, it is assumed to be a
-regex that matches the branches that should be considered.  All other branches
-in `origin` will be ignored.  This is intended to speed-up the script when
-there are many branches, as each takes around 1/10th of a second to check.
-This can be ignored with the `-n` option.
+When a git configuration option `check.branches.[remote]` exists (e.g.
+`check.branches.origin`), it is assumed to be a regex that matches the
+branches that should be considered when checking against this remote.  All
+other branches in that remote will be ignored.  This is intended to speed-up
+the script when there are many branches, as each takes around 1/10th of a
+second to check.  This can be ignored with the `-n` option.
 
 Example:
 ```
