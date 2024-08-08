@@ -25,4 +25,5 @@ git commit --allow-empty -m "Diverging from main/B"
 
 git check | grep "based on origin/main" || exit 1
 
+echo "Test executed successfully"
 exit 0

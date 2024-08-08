@@ -29,4 +29,5 @@ git branch branch
 git commit --allow-empty -m "on branch"
 git check | grep "based on origin/b" || exit 1
 
+echo "Test executed successfully"
 exit 0

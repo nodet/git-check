@@ -22,4 +22,5 @@ git commit --allow-empty -m "another new_branch"
 
 git check -r rem | grep "based on rem/new_branch" || exit 1
 
+echo "Test executed successfully"
 exit 0
