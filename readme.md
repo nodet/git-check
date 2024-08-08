@@ -73,7 +73,8 @@ is configured to push to, or another specified remote.
 Example: git check aa89ff6
 
 This script was written by Xavier Nodet <xavier.nodet@gmail.com>
-and is Unlicensed <http://unlicense.org/>.
+and is Unlicensed <http://unlicense.org/>. It is hosted at
+https://github.com/nodet/git-check.
 ```
 
 The script will only ever consider a single remote when searching from which
