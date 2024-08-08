@@ -92,7 +92,7 @@ second to check.  This can be ignored with the `-n` option.
 
 Example:
 ```
-$ git config --local check.branches "(master)|(v...)"
+$ git config --local check.branches.origin "(master)|(v...)"
 ```
 
 ## How does it work?
