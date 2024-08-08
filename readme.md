@@ -2,13 +2,20 @@
 
 A git command to check the current status of a branch with respect to `origin`.
 
-The script finds the first commit reachable from `HEAD` (by default, could be
-a reference to any commit, tag or branch) that also appears in any branch on
-`origin`. It then prints one-liners showing the history from that commit to
-`HEAD`. In other words, this is a `git log` command that automatically stops
-when it gets uninteresting...
+The script finds the first commit reachable from `HEAD`[^1] that also appears in any branch on
+`origin`[^2].
+It then prints one-liners showing the history from that commit to `HEAD`. In
+other words, this is a `git log` command that automatically stops when it gets
+uninteresting...
 
 Finally, it lists the files modified by these commits.
+
+[^1]: Could be a reference to any commit, tag or branch.
+
+[^2]: If the branch is configured to push to a specific remote by default, the
+script will use that. And these default values can be overridden on the
+command-line.
+
 
 ## Example
 
