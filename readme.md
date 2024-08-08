@@ -57,12 +57,13 @@ Usage: git check [-d] [-r remote] [-l command] [-n] [ref]
        git check -v
 
 Show the commits between the specified reference (or HEAD) and the
-earliest commit that appears on 'origin' or another specified remote.
+earliest commit that appears on 'origin', whatever remote that branch
+is configured to push to, or another specified remote.
 
   -h     Show this help message.
   -v     Show version number.
   -d     Print debugging messages.
-  -r     Consider the specified remote instead of 'origin'.
+  -r     Consider the specified remote.
   -l     Command to use to log the commits.
          Defaults to the value of $GIT_CHECK_LOG_CMD, and
          'log --oneline' if that variable is not set.
@@ -74,6 +75,13 @@ Example: git check aa89ff6
 This script was written by Xavier Nodet <xavier.nodet@gmail.com>
 and is Unlicensed <http://unlicense.org/>.
 ```
+
+The script will only ever consider a single remote when searching from which
+branch the reference was created.  By default, that remote is `origin`. But if
+the branch is configured to push to another repository (by means of the git
+configuration value `branch.[branch].remote` being set), then that remote is
+used instead.  In any case, specifying the remote on the command line using
+the `-r` flag takes precedence.
 
 When a git configuration option `check.branches.[remote]` exists (e.g.
 `check.branches.origin`), it is assumed to be a regex that matches the
