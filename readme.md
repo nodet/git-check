@@ -67,7 +67,7 @@ is configured to push to, or another specified remote.
   -l     Command to use to log the commits.
          Defaults to the value of $GIT_CHECK_LOG_CMD, and
          'log --oneline' if that variable is not set.
-  -n     Ignore 'check.branches' filter.
+  -n     Ignore 'check.branches.[remote]' filter.
   ref    Commit to start from, defaults to HEAD.
 
 Example: git check aa89ff6

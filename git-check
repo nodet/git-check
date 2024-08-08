@@ -33,7 +33,7 @@ show_help() {
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set."
-    echo "  -n     Ignore 'check.branches' filter."
+    echo "  -n     Ignore 'check.branches.[remote]' filter."
     echo "  ref    Commit to start from, defaults to HEAD."
     echo
     echo "Example: git check aa89ff6"
