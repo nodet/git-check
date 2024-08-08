@@ -23,12 +23,13 @@ show_help() {
     echo "       git check -v"
     echo
     echo "Show the commits between the specified reference (or HEAD) and the"
-    echo "earliest commit that appears on '$REMOTE' or another specified remote."
+    echo "earliest commit that appears on '$REMOTE', whatever remote that branch"
+    echo "is configured to push to, or another specified remote."
     echo
     echo "  -h     Show this help message."
     echo "  -v     Show version number."
     echo "  -d     Print debugging messages."
-    echo "  -r     Consider the specified remote instead of '$REMOTE'."
+    echo "  -r     Consider the specified remote."
     echo "  -l     Command to use to log the commits."
     echo "         Defaults to the value of \$GIT_CHECK_LOG_CMD, and"
     echo "         '$LOG_DEFAULT' if that variable is not set."
@@ -65,7 +66,7 @@ while getopts ":hvdr:nl:" opt; do
         exit 0
         ;;
     r)
-        REMOTE=$OPTARG
+        SPECIFIED_REMOTE=$OPTARG
         ;;
     n)
         NO_FILTER=1
@@ -101,6 +102,13 @@ ref_branch=$(git name-rev --name-only $ref)
 if [ "$ref_branch" == "undefined" ]; then
     # If we're not on a branch, 'undefined' would trigger an error later
     ref_branch=$ref
+fi
+
+# Find the remote it is configured to push to, if any
+REMOTE=$(git config --get branch."$ref_branch".remote || echo "origin")
+if [[ "$SPECIFIED_REMOTE" != "" ]]; then
+    # This trumps default values
+    REMOTE=$SPECIFIED_REMOTE
 fi
 
 # Initialize a variable to store the latest common commit
