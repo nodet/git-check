@@ -1,6 +1,11 @@
-all: all-tests
+all: all-tests    ## Run all tests and confirm all is good
 
-clean:
+# Help command courtesy of https://gist.github.com/prwhite/8168133
+help:           ## Show this help.
+#	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+clean:          ## Remove build and test artifacts
 	rm -rf test-origin
 	rm -rf test-wc
 	rm -rf test-*
@@ -22,7 +27,7 @@ test-wc: test-origin
 	git clone test-origin test-wc
 
 
-test: test-origin test-wc
+test: test-origin test-wc    ## Run 'manually coded' tests
 
 	# Check -h
 	git check -h | grep 'Usage'
@@ -66,7 +71,7 @@ test: test-origin test-wc
 
 # Run all the tests in directory 'tests'
 TEST_DIR := tests
-auto-tests: $(wildcard $(TEST_DIR)/*.sh)
+auto-tests: $(wildcard $(TEST_DIR)/*.sh)   ## Run 'automatically' configured tests
 	@for script in $^; do \
 		echo "Running $$script"; \
 		$$script || exit 1; \
