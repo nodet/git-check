@@ -203,7 +203,7 @@ if test "$ref_id" == "$incumbent"; then
         echo "$ref belongs to $incumbent_branch"
 
     fi
-    git $LOG -1 $common_id
+    git $LOG -1 $ref
 else
     echo "$ref is based on $incumbent_branch ($incumbent):"
 
