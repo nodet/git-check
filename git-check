@@ -53,6 +53,13 @@ show_version() {
     echo "git-check $VERSION"
 }
 
+# Function to get the number of unique commits on a branch
+get_unique_commits_count() {
+  local branch=$1
+  local other_branch=$2
+  git rev-list --count "$branch" "^$other_branch"
+}
+
 while getopts ":hvdr:nl:" opt; do
   case ${opt} in
     d)
@@ -180,6 +187,19 @@ for branch in $all_branches; do
     # store the latter.
     if git merge-base --is-ancestor $incumbent $tentative; then
         debug "$incumbent (on $incumbent_branch) is an ancestor of $tentative (on $branch), storing the latter"
+        incumbent=$tentative
+        incumbent_branch=$branch
+        continue
+    fi
+
+    # GH-10: We want to replace the incumbent if the tentative has more
+    # unique commits
+    unique_commits_incumbent=$(get_unique_commits_count "$incumbent" "$tentative")
+    unique_commits_tentative=$(get_unique_commits_count "$tentative" "$incumbent")
+    debug "Unique commits in $incumbent: $unique_commits_incumbent"
+    debug "Unique commits in $tentative: $unique_commits_tentative"
+    if [ "$unique_commits_tentative" -gt "$unique_commits_incumbent" ]; then
+        debug "$tentative has more unique commits than $incumbent."
         incumbent=$tentative
         incumbent_branch=$branch
         continue
